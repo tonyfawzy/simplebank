@@ -36,13 +36,13 @@ MakeHeader(std::string title)
     std::cout << std::endl;
 }
 
-short
-ReadShortNumber(std::string message)
-{
-    short option = 0;
-    std::cout << message + ' '; std::cin >> option;
-    return option;
-}
+// short
+// ReadShortNumber(std::string message)
+// {
+//     short option = 0;
+//     std::cout << message + ' '; std::cin >> option;
+//     return option;
+// }
 
 void
 ShowClientsData()
@@ -117,7 +117,7 @@ ShowMainMenuOptions()
 
     for (short i = 1; i <= title.length()*3; ++i) { std::cout << "="; }
     std::cout << std::endl;
-    PerfromMainMenueOption((enMenuOptions)ReadShortNumber("Choose what do you want to do? [1 to 6]?"));
+    PerfromMainMenueOption((enMenuOptions)getInfo::shortNum("Choose what do you want to do? [1 to 6]?"));
 
 
 }

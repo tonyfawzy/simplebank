@@ -37,7 +37,7 @@ namespace getInfo {
         return ClientData;
     }
 
-    short readShortNumber(std::string message = "Please enter a short number")
+    short shortNum(std::string message = "Please enter a short number")
     {
         short s_num = 0;
         std::cout << message + ": "; std::cin >> s_num; return s_num;
