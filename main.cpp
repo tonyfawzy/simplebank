@@ -51,7 +51,7 @@ AddClientData()
 {
     MakeHeader("Add New Clients Screen");
     std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
-    vClientsData.push_back(getInfo::clientData(true));
+    vClientsData.push_back(getInfo::clientData(vClientsData,true));
     txtDB::SaveClientsDataToFile(vClientsData,filename);
 }
 

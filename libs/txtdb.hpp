@@ -26,21 +26,24 @@ const std::string delim = "#//#";
 
 namespace getInfo {
 
-    sClientData clientData(bool enable_account_number = false)
+    sClientData clientData(std::vector<sClientData>vClientsData,bool enable_account_number = false)
     {
         sClientData ClientData;
         if (enable_account_number)
         {
-            /* 
+            
             std::cout << "Please Enter Account Number? "; std::getline(std::cin >> std::ws, ClientData.AccountNumber);
-            while (isAccountNumberExist(ClientData.AccountNumber,ClientData,vClientsData)) {
-                std::cout << "Please Enter Account Number? "; std::getline(std::cin, ClientData.AccountNumber);
-            } */
-   
             std::cout << "Please Enter PIN-Code? "; std::getline(std::cin, ClientData.PINCode);
             std::cout << "Please Enter The Name? "; std::getline(std::cin, ClientData.Name);
             std::cout << "Please Enter Phone Number? "; std::getline(std::cin, ClientData.PhoneNumber);
             std::cout << "Please Enter Balance? "; std::cin >> ClientData.AccountBalance;
+            while (isAccountNumberExist(ClientData.AccountNumber, ClientData,vClientsData))
+            {
+                std::cout << "Client with ["+ClientData.AccountNumber+"] Already exists, "
+                          << "Please Enter another Account Number? ";
+                          std::getline(std::cin >> std::ws, ClientData.AccountNumber);
+            }
+
         } else {
             std::cout << "Please Enter PIN-Code? "; std::getline(std::cin >> std::ws, ClientData.PINCode);
             std::cout << "Please Enter The Name? "; std::getline(std::cin, ClientData.Name);
