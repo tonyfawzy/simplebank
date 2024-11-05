@@ -71,7 +71,7 @@ namespace getInfo {
 
 namespace showInfo {
     
-    void printClientDataCard(sClientData ClientData, std::string HeaderMessage = "The following are the client details:")
+    void ClientDataCard(sClientData ClientData, std::string HeaderMessage = "The following are the client details:")
     {
         std::cout << HeaderMessage << '\n' << std::endl;
         char arrCol1[5][16] = {
@@ -118,7 +118,7 @@ namespace showInfo {
         sClientData ClientData;
         if (isAccountNumberExist(accountNumber,ClientData,vClientsData))
         {
-            showInfo::printClientDataCard(ClientData);
+            showInfo::ClientDataCard(ClientData);
         } else {
             std::cout << "Your account number ("+accountNumber+") is not exist :(\n";
         }
@@ -126,7 +126,7 @@ namespace showInfo {
 
     void showClientData(sClientData ClientData)
     {
-        showInfo::printClientDataCard(ClientData);
+        showInfo::ClientDataCard(ClientData);
     }
 
 
@@ -255,9 +255,5 @@ namespace txtDB {
     }
 
     
-
-
-
-
 
 }

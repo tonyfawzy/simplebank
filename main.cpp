@@ -50,10 +50,37 @@ void
 AddClientData()
 {
     MakeHeader("Add New Clients Screen");
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
-    vClientsData.push_back(getInfo::clientData(vClientsData,true));
-    txtDB::SaveClientsDataToFile(vClientsData,filename);
+    char addMore = 'n';
+    do {
+        std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+        vClientsData.push_back(getInfo::clientData(vClientsData,true));
+        txtDB::SaveClientsDataToFile(vClientsData,filename);
+
+        std::cout << "Client Added Successfully, Do you want to add more clients? Y/N? "; std::cin >> addMore;
+    } while (tolower(addMore) == 'y');
 }
+
+
+void
+DeleteClientData()
+{
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    sClientData ClientData;
+
+    MakeHeader("Delete Client Screen");
+    std::string accountNumber = "";
+    std::cout << "Please enter account number? "; std::getline(std::cin >> std::ws, accountNumber);
+    if (isAccountNumberExist(accountNumber,ClientData,vClientsData))
+    {
+        showInfo::ClientDataCard(ClientData);
+        txtDB::MarkClientDataForDelete(accountNumber,vClientsData);
+        txtDB::SaveClientsDataToFile(vClientsData,filename);
+    } else {
+        std::cout << accountNumber << " Not exist!\n";
+    }
+    
+}
+
 
 void
 GoBackToMainMenuOptions()
@@ -81,6 +108,7 @@ PerfromMainMenueOption(enMenuOptions MenuOption)
         break;
     case enMenuOptions::DeleteClient:
         system("clear");
+        DeleteClientData();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::UpdateClient:
