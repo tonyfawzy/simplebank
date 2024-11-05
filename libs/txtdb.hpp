@@ -19,20 +19,34 @@ struct sClientData
 
 
 /* funcation declarations */
-bool isAccountNumberExist(std::string accountNumber, sClientData& ClientData,std::vector<sClientData>vClientsData);
-
+bool isAccountNumberExist(std::string accountNumber, sClientData& ClientData, std::vector<sClientData>vClientsData);
 
 const std::string delim = "#//#";
 
 
 namespace getInfo {
 
-    sClientData ReadClientData(sClientData ClientData)
+    sClientData clientData(bool enable_account_number = false)
     {
-        std::cout << "Please Enter PIN-Code? "; std::getline(std::cin >> std::ws, ClientData.PINCode);
-        std::cout << "Please Enter The Name? "; std::getline(std::cin, ClientData.Name);
-        std::cout << "Please Enter Phone Number? "; std::getline(std::cin, ClientData.PhoneNumber);
-        std::cout << "Please Enter Balance? "; std::cin >> ClientData.AccountBalance;
+        sClientData ClientData;
+        if (enable_account_number)
+        {
+            /* 
+            std::cout << "Please Enter Account Number? "; std::getline(std::cin >> std::ws, ClientData.AccountNumber);
+            while (isAccountNumberExist(ClientData.AccountNumber,ClientData,vClientsData)) {
+                std::cout << "Please Enter Account Number? "; std::getline(std::cin, ClientData.AccountNumber);
+            } */
+   
+            std::cout << "Please Enter PIN-Code? "; std::getline(std::cin, ClientData.PINCode);
+            std::cout << "Please Enter The Name? "; std::getline(std::cin, ClientData.Name);
+            std::cout << "Please Enter Phone Number? "; std::getline(std::cin, ClientData.PhoneNumber);
+            std::cout << "Please Enter Balance? "; std::cin >> ClientData.AccountBalance;
+        } else {
+            std::cout << "Please Enter PIN-Code? "; std::getline(std::cin >> std::ws, ClientData.PINCode);
+            std::cout << "Please Enter The Name? "; std::getline(std::cin, ClientData.Name);
+            std::cout << "Please Enter Phone Number? "; std::getline(std::cin, ClientData.PhoneNumber);
+            std::cout << "Please Enter Balance? "; std::cin >> ClientData.AccountBalance;
+        }
 
         return ClientData;
     }
@@ -43,7 +57,7 @@ namespace getInfo {
         std::cout << message + ": "; std::cin >> s_num; return s_num;
     }
 
-    std::string readAccountNumber(std::string message = "Please enter the account number")
+    std::string accountNumber(std::string message = "Please enter the account number")
     {
         std::string accountNumber = "";
         std::cout << message + ": "; std::getline(std::cin >> std::ws,accountNumber);
@@ -52,7 +66,7 @@ namespace getInfo {
 
 }
 
-namespace printinfo {
+namespace showInfo {
     
     void printClientDataCard(sClientData ClientData, std::string HeaderMessage = "The following are the client details:")
     {
@@ -75,40 +89,33 @@ namespace printinfo {
         std::cout << std::endl;
     }
 
-    void ShowAllClients(std::vector<sClientData>vClientsData)
+    void AllClients(std::vector<sClientData>vClientsData)
     {
-        std::cout << "╭─────────────────────────────────────────╮\n";
-        std::cout << "│" << std::left << std::setw(22)  << "          All Clients Available" << "\t  │\n";
-        std::cout << "╰─────────────────────────────────────────╯\n";
 
-        //std::cout << std::left << std::setw(10) << "╭──────────┬"
-                               //<< std::setw(6)  << "──────┬\n";
-        std::cout << "╭────────────────┬────────────────────────╮\n";
-        std::cout << "│Account Number  │Name                    │\n";
-        std::cout << "├────────────────┼────────────────────────┤\n";
+        std::cout << "\t\t\t\t\tClient List(" << vClientsData.capacity() <<  ") Client(s).\n";
+        std::cout << "---------------------------------------------------------------------------------------------\n";
+        std::cout << "| Account Number  | PIN Code  | Client Name                   | Phone         | Balance      \n";
+        std::cout << "---------------------------------------------------------------------------------------------\n";
         for (sClientData& C : vClientsData)
         {
-            std::cout << std::left << std::setw(19) << "│" + C.AccountNumber << "│"
-                                   << std::setw(24) << C.Name << "│" << std::endl;
+            std::cout << std::left << std::setw(20) << "│ " + C.AccountNumber << "│ "
+                                   << std::setw(10) << C.PINCode << "│ "
+                                   << std::setw(30) << C.Name << "| "
+                                   << std::setw(14) << C.PhoneNumber << "| "
+                                   << std::setw(13) << C.AccountBalance << std::endl;
         }
-        std::cout << "╰────────────────┴────────────────────────╯\n";
+        std::cout << "---------------------------------------------------------------------------------------------\n";
     }
 
-    void ShowOptions()
-    {
-        std::cout << "[1] - Show Details\n"
-                  << "[2] - Edit Client Data\n"
-                  << "[3] - Delete Client\n";
-    }
-
+   
 
     void showClientDataByAccountNumber(std::vector<sClientData>vClientsData)
     {
-        std::string accountNumber = getInfo::readAccountNumber();
+        std::string accountNumber = getInfo::accountNumber();
         sClientData ClientData;
         if (isAccountNumberExist(accountNumber,ClientData,vClientsData))
         {
-            printinfo::printClientDataCard(ClientData);
+            showInfo::printClientDataCard(ClientData);
         } else {
             std::cout << "Your account number ("+accountNumber+") is not exist :(\n";
         }
@@ -116,7 +123,7 @@ namespace printinfo {
 
     void showClientData(sClientData ClientData)
     {
-        printinfo::printClientDataCard(ClientData);
+        showInfo::printClientDataCard(ClientData);
     }
 
 
@@ -189,7 +196,7 @@ bool isAccountNumberExist(std::string accountNumber, sClientData& ClientData,std
 
 
 
-namespace txtdb {
+namespace txtDB {
 
     std::vector<sClientData> LoadClientsDataFromFile(std::string _filename)
     {
@@ -222,7 +229,7 @@ namespace txtdb {
         }
     }
 
-
+    
 
     void SaveClientsDataToFile(std::vector<sClientData>vClientsData, std::string _filename)
     {

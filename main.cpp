@@ -13,7 +13,7 @@ enum enMenuOptions {
 };
 
 const std::string filename = "ClientsData.txt";
-
+const char dividerChar = '-';
 
 /* funcation declarations */
 void ShowMainMenuOptions();
@@ -21,9 +21,10 @@ void ShowMainMenuOptions();
 
 
 void
-MakeHeader(std::string title)
+MakeHeader(std::string title, char _dividerChar = dividerChar)
 {
-    for (short i = 1; i <= title.length()*3; ++i) { std::cout << "="; }
+    
+    for (short i = 1; i <= title.length()*3; ++i) { std::cout << _dividerChar; }
 
     std::cout << std::endl;
 
@@ -31,28 +32,28 @@ MakeHeader(std::string title)
 
     std::cout << title << std::endl;
 
-    for (short i = 1; i <= title.length()*3; ++i) { std::cout << "="; }
+    for (short i = 1; i <= title.length()*3; ++i) { std::cout << _dividerChar; }
 
     std::cout << std::endl;
 }
 
-// short
-// ReadShortNumber(std::string message)
-// {
-//     short option = 0;
-//     std::cout << message + ' '; std::cin >> option;
-//     return option;
-// }
+
 
 void
 ShowClientsData()
 {
-
-    std::cout << "test" << std::endl;
-
-    
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    showInfo::AllClients(vClientsData);
 }
 
+void
+AddClientData()
+{
+    MakeHeader("Add New Clients Screen");
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    vClientsData.push_back(getInfo::clientData(true));
+    txtDB::SaveClientsDataToFile(vClientsData,filename);
+}
 
 void
 GoBackToMainMenuOptions()
@@ -75,6 +76,7 @@ PerfromMainMenueOption(enMenuOptions MenuOption)
     
     case enMenuOptions::AddNewClient:
         system("clear");
+        AddClientData();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::DeleteClient:
@@ -115,7 +117,7 @@ ShowMainMenuOptions()
     std::cout << "\t[5] Find Client.\n";
     std::cout << "\t[6] Exit.\n";
 
-    for (short i = 1; i <= title.length()*3; ++i) { std::cout << "="; }
+    for (short i = 1; i <= title.length()*3; ++i) { std::cout << dividerChar; }
     std::cout << std::endl;
     PerfromMainMenueOption((enMenuOptions)getInfo::shortNum("Choose what do you want to do? [1 to 6]?"));
 
