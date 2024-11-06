@@ -128,13 +128,28 @@ UpdateClientInfo()
         std::cout << AccountNumber << " NOT exist!\n";
     }
     
-
-
-
-
-
 }
 
+
+
+
+void
+FindClientData()
+{
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    sClientData ClientData;
+
+    MakeHeader("Find Client Screen");
+    std::string AccountNumber = "";
+    std::cout << "Please enter account number? "; std::getline(std::cin >> std::ws, AccountNumber);
+
+    if (isAccountNumberExist(AccountNumber,ClientData,vClientsData))
+    {
+        showInfo::showClientData(ClientData);
+    } else {
+        std::cout << AccountNumber << " NOT exist!\n";
+    }
+}
 
 void
 GoBackToMainMenuOptions()
@@ -172,6 +187,7 @@ PerfromMainMenueOption(enMenuOptions MenuOption)
         break;
     case enMenuOptions::FindClient:
         system("clear");
+        FindClientData();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::Exit:
