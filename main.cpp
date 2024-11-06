@@ -90,6 +90,53 @@ DeleteClientData()
 
 
 void
+UpdateClientInfo()
+{
+
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    sClientData ClientData;
+
+    MakeHeader("Update Client Info Screen");
+    std::string AccountNumber = "";
+    std::cout << "Please enter account number? "; std::getline(std::cin >> std::ws, AccountNumber);
+    if (isAccountNumberExist(AccountNumber,ClientData,vClientsData))
+    {
+        char _update = 'n';
+        showInfo::ClientDataCard(ClientData);
+
+        std::cout << "Are you sure you want to update this client? Y/N? "; std::cin >> _update;
+        if (tolower(_update) == 'y')
+        {
+
+            for (sClientData& C : vClientsData)
+            {
+                if (AccountNumber == C.AccountNumber)
+                {
+                    C = getInfo::clientData(vClientsData);
+                    C.AccountNumber = AccountNumber;
+                    ClientData = C;
+                    break;
+                }
+            }
+
+            txtDB::SaveClientsDataToFile(vClientsData,filename);
+            std::cout << "The client has been updated!\n";
+
+
+        }
+    } else {
+        std::cout << AccountNumber << " NOT exist!\n";
+    }
+    
+
+
+
+
+
+}
+
+
+void
 GoBackToMainMenuOptions()
 {
     system("read -p \"\n\nPress any key to go back to main menu...\"");
@@ -120,6 +167,7 @@ PerfromMainMenueOption(enMenuOptions MenuOption)
         break;
     case enMenuOptions::UpdateClient:
         system("clear");
+        UpdateClientInfo();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::FindClient:
