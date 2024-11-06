@@ -72,11 +72,18 @@ DeleteClientData()
     std::cout << "Please enter account number? "; std::getline(std::cin >> std::ws, accountNumber);
     if (isAccountNumberExist(accountNumber,ClientData,vClientsData))
     {
+        char _delete = 'n';
         showInfo::ClientDataCard(ClientData);
-        txtDB::MarkClientDataForDelete(accountNumber,vClientsData);
-        txtDB::SaveClientsDataToFile(vClientsData,filename);
+
+        std::cout << "Are you sure you want to delete this client? Y/N? "; std::cin >> _delete;
+        if (tolower(_delete) == 'y')
+        {
+            txtDB::MarkClientDataForDelete(accountNumber,vClientsData);
+            txtDB::SaveClientsDataToFile(vClientsData,filename);
+            std::cout << "The client has been deleted!\n";
+        }
     } else {
-        std::cout << accountNumber << " Not exist!\n";
+        std::cout << accountNumber << " NOT exist!\n";
     }
     
 }
