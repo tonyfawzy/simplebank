@@ -5,8 +5,6 @@
 #include <iomanip>
 #include "libs/txtdb.hpp"
 
-
-
 enum enMenuOptions {
     ShowClientsList = 1,    AddNewClient    = 2,    DeleteClient    = 3,
     UpdateClient    = 4,    FindClient      = 5,    Exit            = 6,
@@ -17,7 +15,6 @@ const char dividerChar = '-';
 
 /* funcation declarations */
 void ShowMainMenuOptions();
-
 
 
 void
@@ -36,8 +33,6 @@ MakeHeader(std::string title, char _dividerChar = dividerChar)
 
     std::cout << std::endl;
 }
-
-
 
 void
 ShowClientsData()
@@ -59,7 +54,6 @@ AddClientData()
         std::cout << "Client Added Successfully, Do you want to add more clients? Y/N? "; std::cin >> addMore;
     } while (tolower(addMore) == 'y');
 }
-
 
 void
 DeleteClientData()
@@ -85,9 +79,8 @@ DeleteClientData()
     } else {
         std::cout << accountNumber << " NOT exist!\n";
     }
-    
+  
 }
-
 
 void
 UpdateClientInfo()
@@ -131,8 +124,6 @@ UpdateClientInfo()
 }
 
 
-
-
 void
 FindClientData()
 {
@@ -158,9 +149,8 @@ GoBackToMainMenuOptions()
     ShowMainMenuOptions();
 }
 
-
 void
-PerfromMainMenueOption(enMenuOptions MenuOption)
+PerfromMainMenuOption(enMenuOptions MenuOption)
 {
     switch (MenuOption)
     {
@@ -218,9 +208,7 @@ ShowMainMenuOptions()
 
     for (short i = 1; i <= title.length()*3; ++i) { std::cout << dividerChar; }
     std::cout << std::endl;
-    PerfromMainMenueOption((enMenuOptions)getInfo::shortNum("Choose what do you want to do? [1 to 6]?"));
-
-
+    PerfromMainMenuOption((enMenuOptions)getInfo::shortNum("Choose what do you want to do? [1 to 6]?"));
 }
 
 
