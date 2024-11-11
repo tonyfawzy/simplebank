@@ -41,16 +41,21 @@ ShowClientsData()
     showInfo::AllClients(vClientsData);
 }
 
+
+void AddNewClient()
+{
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    vClientsData.push_back(getInfo::clientData(vClientsData,true));
+    txtDB::SaveClientsDataToFile(vClientsData,filename);
+}
+
 void
-AddClientData()
+AddClientsData()
 {
     MakeHeader("Add New Clients Screen");
     char addMore = 'n';
     do {
-        std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
-        vClientsData.push_back(getInfo::clientData(vClientsData,true));
-        txtDB::SaveClientsDataToFile(vClientsData,filename);
-
+        AddNewClient();
         std::cout << "Client Added Successfully, Do you want to add more clients? Y/N? "; std::cin >> addMore;
     } while (tolower(addMore) == 'y');
 }
@@ -162,7 +167,7 @@ PerfromMainMenuOption(enMenuOptions MenuOption)
     
     case enMenuOptions::AddNewClient:
         system("clear");
-        AddClientData();
+        AddClientsData();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::DeleteClient:
