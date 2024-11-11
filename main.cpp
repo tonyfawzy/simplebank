@@ -7,7 +7,13 @@
 
 enum enMenuOptions {
     ShowClientsList = 1,    AddNewClient    = 2,    DeleteClient    = 3,
-    UpdateClient    = 4,    FindClient      = 5,    Exit            = 6,
+    UpdateClient    = 4,    FindClient      = 5,    Transactions    = 6,
+    Exit            = 7,
+};
+
+enum enTransactionsOptions {
+    Deposit         = 1,    Withdraw        = 2,    Total_Balances  = 3,
+    Main_Menu       = 4,    
 };
 
 const std::string filename = "ClientsData.txt";
@@ -15,7 +21,7 @@ const char dividerChar = '-';
 
 /* funcation declarations */
 void ShowMainMenuOptions();
-
+void ShowTransactionsMenuOptions();
 
 void
 MakeHeader(std::string title, char _dividerChar = dividerChar)
@@ -42,20 +48,15 @@ ShowClientsData()
 }
 
 
-void AddNewClient()
-{
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
-    vClientsData.push_back(getInfo::clientData(vClientsData,true));
-    txtDB::SaveClientsDataToFile(vClientsData,filename);
-}
-
 void
 AddClientsData()
 {
     MakeHeader("Add New Clients Screen");
     char addMore = 'n';
     do {
-        AddNewClient();
+        std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+        vClientsData.push_back(getInfo::clientData(vClientsData,true));
+        txtDB::SaveClientsDataToFile(vClientsData,filename);
         std::cout << "Client Added Successfully, Do you want to add more clients? Y/N? "; std::cin >> addMore;
     } while (tolower(addMore) == 'y');
 }
@@ -154,6 +155,29 @@ GoBackToMainMenuOptions()
     ShowMainMenuOptions();
 }
 
+
+
+void
+PerfromTransactionsOptions(enTransactionsOptions TransactionsOptions)
+{
+    switch (TransactionsOptions)
+    {
+    case enTransactionsOptions::Deposit:
+        system("clear");
+        break;
+    case enTransactionsOptions::Withdraw:
+        system("clear");
+        break;
+    case enTransactionsOptions::Total_Balances:
+        system("clear");
+        break;    
+    case enTransactionsOptions::Main_Menu:
+        system("clear");
+        ShowMainMenuOptions();
+        break;
+    }
+}
+
 void
 PerfromMainMenuOption(enMenuOptions MenuOption)
 {
@@ -185,6 +209,10 @@ PerfromMainMenuOption(enMenuOptions MenuOption)
         FindClientData();
         GoBackToMainMenuOptions();
         break;
+    case enMenuOptions::Transactions:
+        system("clear");
+        ShowTransactionsMenuOptions();
+        break;
     case enMenuOptions::Exit:
         system("clear");
         MakeHeader("GoodBye :(");
@@ -209,11 +237,34 @@ ShowMainMenuOptions()
     std::cout << "\t[3] Delete Client.\n";
     std::cout << "\t[4] Update Client Info.\n";
     std::cout << "\t[5] Find Client.\n";
-    std::cout << "\t[6] Exit.\n";
+    std::cout << "\t[6] Transactions.\n";
+    std::cout << "\t[7] Exit.\n";
 
     for (short i = 1; i <= title.length()*3; ++i) { std::cout << dividerChar; }
     std::cout << std::endl;
-    PerfromMainMenuOption((enMenuOptions)getInfo::shortNum("Choose what do you want to do? [1 to 6]?"));
+    PerfromMainMenuOption((enMenuOptions)getInfo::shortNum("Choose what do you want to do? [1 to 7]?"));
+}
+
+
+void
+ShowTransactionsMenuOptions()
+{
+    std::string title = "Transactions Menu Screen";
+
+    system("clear");
+
+    MakeHeader(title);
+
+    std::cout << "\t[1] Deposit.\n";
+    std::cout << "\t[2] Withdraw.\n";
+    std::cout << "\t[3] Total Balances.\n";
+    std::cout << "\t[4] Main Menu.\n";
+
+    for (short i = 1; i <= title.length()*3; ++i) { std::cout << dividerChar; }
+    std::cout << std::endl;
+    PerfromTransactionsOptions((enTransactionsOptions)getInfo::shortNum("Choose what do you want to do? [1 to 4]?"));
+
+
 }
 
 

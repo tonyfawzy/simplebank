@@ -101,11 +101,11 @@ namespace showInfo {
         std::cout << "---------------------------------------------------------------------------------------------\n";
         for (sClientData& C : vClientsData)
         {
-            std::cout << std::left << std::setw(20) << "│ " + C.AccountNumber << "│ "
-                                   << std::setw(10) << C.PINCode << "│ "
-                                   << std::setw(30) << C.Name << "| "
-                                   << std::setw(14) << C.PhoneNumber << "| "
-                                   << std::setw(13) << C.AccountBalance << std::endl;
+            std::cout << std::left << std::setw(20) << "│ " +   C.AccountNumber     << "│ "
+                                   << std::setw(10) <<          C.PINCode           << "│ "
+                                   << std::setw(30) <<          C.Name              << "| "
+                                   << std::setw(14) <<          C.PhoneNumber       << "| "
+                                   << std::setw(13) <<          C.AccountBalance    << std::endl;
         }
         std::cout << "---------------------------------------------------------------------------------------------\n";
     }
