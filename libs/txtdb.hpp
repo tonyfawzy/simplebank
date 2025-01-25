@@ -9,7 +9,8 @@
 
 #define DLIM " -> "
 
-struct sClientData
+struct 
+sClientData
 {
     std::string AccountNumber = "";
     std::string PINCode = "";
@@ -19,6 +20,13 @@ struct sClientData
     bool MarkForDelete = false;
 };
 
+struct 
+sUsersData
+{
+    std::string Username = "";
+    std::string Password = "";
+    short Permissions = 0;
+};
 
 /* funcation declarations */
 bool isAccountNumberExist(std::string accountNumber, sClientData& ClientData, std::vector<sClientData>vClientsData);
@@ -58,19 +66,22 @@ namespace getInfo {
     }
 
 
-    double doubleNum(std::string message = "Please enter a double number")
+    double 
+    doubleNum(std::string message = "Please enter a double number")
     {
         double d_num = 0;
         std::cout << message + ": "; std::cin >> d_num; return d_num;
     }
 
-    short shortNum(std::string message = "Please enter a short number")
+    short 
+    shortNum(std::string message = "Please enter a short number")
     {
         short s_num = 0;
         std::cout << message + ": "; std::cin >> s_num; return s_num;
     }
 
-    std::string accountNumber(std::string message = "Please enter the account number")
+    std::string 
+    accountNumber(std::string message = "Please enter the account number")
     {
         std::string accountNumber = "";
         std::cout << message + ": "; std::getline(std::cin >> std::ws, accountNumber);
@@ -81,7 +92,8 @@ namespace getInfo {
 
 namespace showInfo {
 
-    void ClientDataCard(sClientData ClientData, std::string HeaderMessage = "The following are the client details:")
+    void 
+    ClientDataCard(sClientData ClientData, std::string HeaderMessage = "The following are the client details:")
     {
         std::cout << HeaderMessage << '\n' << std::endl;
         char arrCol1[5][16] = {
@@ -102,7 +114,8 @@ namespace showInfo {
         std::cout << std::endl;
     }
 
-    void AllClients(std::vector<sClientData>vClientsData)
+    void 
+    AllClients(std::vector<sClientData>vClientsData)
     {
 
         std::cout << "\t\t\t\t\tClient List(" << vClientsData.size() << ") Client(s).\n";
@@ -124,7 +137,8 @@ namespace showInfo {
         }
         std::cout << "---------------------------------------------------------------------------------------------\n";
     }
-    void TotalBalances(std::vector<sClientData>vClientsData)
+    void 
+    TotalBalances(std::vector<sClientData>vClientsData)
     {
         double totalBalances = 0;
 
@@ -149,7 +163,8 @@ namespace showInfo {
     }
 
 
-    void showClientDataByAccountNumber(std::vector<sClientData>vClientsData)
+    void 
+    showClientDataByAccountNumber(std::vector<sClientData>vClientsData)
     {
         std::string accountNumber = getInfo::accountNumber();
         sClientData ClientData;
@@ -172,7 +187,8 @@ namespace showInfo {
 }
 
 
-std::vector<std::string> SplitString(std::string line, std::string _delim = delim)
+std::vector<std::string> 
+SplitString(std::string line, std::string _delim = delim)
 {
     std::vector<std::string>vRecords;
     size_t pos = 0;
@@ -196,7 +212,8 @@ std::vector<std::string> SplitString(std::string line, std::string _delim = deli
     return vRecords;
 }
 
-sClientData ConvertLineToRecord(std::string line)
+sClientData 
+ConvertLineToRecord(std::string line)
 {
     std::vector<std::string>vRecords = SplitString(line);
     sClientData ClientData;
@@ -210,7 +227,8 @@ sClientData ConvertLineToRecord(std::string line)
     return ClientData;
 }
 
-std::string ConvertRecordToLine(sClientData ClientData, std::string _delim = delim)
+std::string 
+ConvertRecordToLine(sClientData ClientData, std::string _delim = delim)
 {
     std::string line = "";
     line += ClientData.AccountNumber + delim;
@@ -222,7 +240,9 @@ std::string ConvertRecordToLine(sClientData ClientData, std::string _delim = del
 }
 
 
-bool isAccountNumberExist(std::string accountNumber, sClientData& ClientData, std::vector<sClientData>vClientsData)
+
+bool 
+isAccountNumberExist(std::string accountNumber, sClientData& ClientData, std::vector<sClientData>vClientsData)
 {
     for (sClientData& C : vClientsData)
     {
@@ -235,7 +255,18 @@ bool isAccountNumberExist(std::string accountNumber, sClientData& ClientData, st
     return false;
 }
 
-
+bool 
+isUsernameAndPasswordExist(std::string Username, std::string Password, sUsersData& UsersData, std::vector<sUsersData>vUsersData)
+{
+    for (sUsersData& U : vUsersData)
+    {
+        if (Username == U.Username && Password == U.Password) {
+            UsersData = U;
+            return true;
+        }
+    }
+    return false;
+}
 
 namespace txtDB {
 
