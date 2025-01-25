@@ -9,12 +9,17 @@
 enum enMenuOptions {
     ShowClientsList = 1,    AddNewClient    = 2,    DeleteClient    = 3,
     UpdateClient    = 4,    FindClient      = 5,    Transactions    = 6,
-    Exit            = 7,
+    ManageUsers     = 7,    Logout          = 8,
+};
+
+enum enManageUsersOptions {
+    ListUsers       = 1,    AddNewUser      = 2,    DeleteUser      = 3,
+    UpdateUser      = 4,    FindUser        = 5,    MainMenu        = 6,
 };
 
 enum enTransactionsOptions {
     Deposit         = 1,    Withdraw        = 2,    Total_Balances  = 3,
-    Main_Menu       = 4,    
+    MainMenu_1      = 4,    
 };
 
 const std::string filename = "ClientsData.txt";
@@ -23,6 +28,7 @@ const char dividerChar = '-';
 /* funcation declarations */
 void ShowMainMenuOptions();
 void ShowTransactionsMenuOptions();
+void ShowManageUsersOptions();
 
 void
 MakeHeader(std::string title, char _dividerChar = dividerChar)
@@ -276,7 +282,7 @@ PerfromTransactionsOptions(enTransactionsOptions TransactionsOptions)
         ShowTotalBalances();
         GoBackToTransactionsOptions();
         break;    
-    case enTransactionsOptions::Main_Menu:
+    case enTransactionsOptions::MainMenu_1:
         system("clear");
         ShowMainMenuOptions();
         break;
@@ -318,14 +324,68 @@ PerfromMainMenuOption(enMenuOptions MenuOption)
         system("clear");
         ShowTransactionsMenuOptions();
         break;
-    case enMenuOptions::Exit:
+    case enMenuOptions::ManageUsers:
         system("clear");
-        MakeHeader("GoodBye :(");
+        ShowManageUsersOptions();
+        break;
+    case enMenuOptions::Logout:
+        system("clear");
+        //MakeHeader("GoodBye :(");
         break;
 
     }
 }
 
+void
+PerfromManageUsersOption(enManageUsersOptions ManageUsersOptions)
+{
+    switch (ManageUsersOptions)
+    {
+    case enManageUsersOptions::ListUsers:
+        system("clear");
+        GoBackToMainMenuOptions();
+        break;
+    case enManageUsersOptions::AddNewUser:
+        system("clear");
+        break;
+    case enManageUsersOptions::DeleteUser:
+        system("clear");
+        break;
+    case enManageUsersOptions::UpdateUser:
+        system("clear");
+        break;
+    case enManageUsersOptions::FindUser:
+        system("clear");
+        break;
+    case enManageUsersOptions::MainMenu:
+        system("clear");
+        ShowMainMenuOptions();
+        break;
+    }
+}
+
+void
+ShowManageUsersOptions()
+{
+    std::string title = "Manage Users Menu Screen";
+
+    system("clear");
+
+    MakeHeader(title);
+
+    std::cout << "\t[1] List Users.\n";
+    std::cout << "\t[2] Add New User.\n";
+    std::cout << "\t[3] Delete User.\n";
+    std::cout << "\t[4] Update User.\n";
+    std::cout << "\t[5] Find User.\n";
+    std::cout << "\t[6] Main Menu.\n";
+
+    for (short i = 1; i <= title.length()*3; ++i) { std::cout << dividerChar; }
+    std::cout << std::endl;
+    PerfromManageUsersOption((enManageUsersOptions)getInfo::shortNum("Choose what do you want to do? [1 to 6]?"));
+
+
+}
 
 
 void
@@ -343,11 +403,12 @@ ShowMainMenuOptions()
     std::cout << "\t[4] Update Client Info.\n";
     std::cout << "\t[5] Find Client.\n";
     std::cout << "\t[6] Transactions.\n";
-    std::cout << "\t[7] Exit.\n";
+    std::cout << "\t[7] Manage Users.\n";
+    std::cout << "\t[8] Logout.\n";
 
     for (short i = 1; i <= title.length()*3; ++i) { std::cout << dividerChar; }
     std::cout << std::endl;
-    PerfromMainMenuOption((enMenuOptions)getInfo::shortNum("Choose what do you want to do? [1 to 7]?"));
+    PerfromMainMenuOption((enMenuOptions)getInfo::shortNum("Choose what do you want to do? [1 to 8]?"));
 }
 
 
