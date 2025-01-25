@@ -3,6 +3,7 @@
 #include <vector>
 #include <limits>
 #include <iomanip>
+#include <cmath>
 #include "libs/txtdb.hpp"
 
 enum enMenuOptions {
@@ -156,6 +157,104 @@ GoBackToMainMenuOptions()
 }
 
 
+void
+GoBackToTransactionsOptions()
+{
+    std::cout << "\n\nPress any key to go back to main menu...";
+    system("pause>0");
+    ShowTransactionsMenuOptions();
+}
+
+
+bool
+PerformDepositByAccountNumber(std::string accountNumber, double amount, std::vector<sClientData>& vClientsData)
+{
+
+    char confirm = 'n';
+
+    std::cout << "Are you sure you want perform this transaction? y/n? "; std::cin >> confirm;
+
+    if (tolower(confirm) == 'y')
+    {
+        for (sClientData& C : vClientsData)
+        {
+            if (C.AccountNumber == accountNumber)
+            {
+                C.AccountBalance += amount;
+                txtDB::SaveClientsDataToFile(vClientsData, filename);
+                std::cout << "\nDone successfully. New balance is: " << C.AccountBalance;
+                break;
+            }
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+   
+
+
+void
+PerformDeposit()
+{
+    MakeHeader("Deposit Screen");
+
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    sClientData ClientData;
+
+    std::string accountNumber = getInfo::accountNumber();
+
+    while (!(isAccountNumberExist(accountNumber,ClientData,vClientsData)))
+    {
+        std::cout << "Invalid Account Number, Please try again!!\n";
+        accountNumber = getInfo::accountNumber();
+    }
+
+    showInfo::ClientDataCard(ClientData);
+
+    double amount = getInfo::doubleNum("Please enter deposit amount?");
+
+    PerformDepositByAccountNumber(accountNumber, amount, vClientsData);
+}
+
+
+void
+PerformWithdraw()
+{
+    MakeHeader("Withdraw Screen");
+
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    std::string accountNumber = getInfo::accountNumber();
+    sClientData ClientData;
+
+    while (!(isAccountNumberExist(accountNumber, ClientData, vClientsData)))
+    {
+        std::cout << "Invalid Account Number, Please try again!!\n";
+        accountNumber = getInfo::accountNumber();
+    }
+/*    PerformWithdrawByAccountNumber(accountNumber, vClientsData); */
+
+    showInfo::ClientDataCard(ClientData);
+
+    double amount = getInfo::doubleNum("Please enter withdraw amount?");
+    while (amount > ClientData.AccountBalance)
+    {
+        std::cout << "Amount Exceeds the balance, you can withdraw up to: " + std::to_string(floor(ClientData.AccountBalance)) << std::endl;
+        amount = getInfo::doubleNum("Please enter another amount?");
+    }
+
+    PerformDepositByAccountNumber(accountNumber, amount*-1, vClientsData);
+
+}
+
+void
+ShowTotalBalances()
+{
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    showInfo::TotalBalances(vClientsData);
+}
+
 
 void
 PerfromTransactionsOptions(enTransactionsOptions TransactionsOptions)
@@ -164,12 +263,18 @@ PerfromTransactionsOptions(enTransactionsOptions TransactionsOptions)
     {
     case enTransactionsOptions::Deposit:
         system("clear");
+        PerformDeposit();
+        GoBackToTransactionsOptions();
         break;
     case enTransactionsOptions::Withdraw:
         system("clear");
+        PerformWithdraw();
+        GoBackToTransactionsOptions();
         break;
     case enTransactionsOptions::Total_Balances:
         system("clear");
+        ShowTotalBalances();
+        GoBackToTransactionsOptions();
         break;    
     case enTransactionsOptions::Main_Menu:
         system("clear");
