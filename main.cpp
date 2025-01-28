@@ -6,22 +6,6 @@
 #include <cmath>
 #include "libs/txtdb.hpp"
 
-enum enMenuOptions {
-    ShowClientsList = 1,    AddNewClient    = 2,    DeleteClient    = 3,
-    UpdateClient    = 4,    FindClient      = 5,    Transactions    = 6,
-    ManageUsers     = 7,    Logout          = 8,
-};
-
-enum enManageUsersOptions {
-    ListUsers       = 1,    AddNewUser      = 2,    DeleteUser      = 3,
-    UpdateUser      = 4,    FindUser        = 5,    MainMenu        = 6,
-};
-
-enum enTransactionsOptions {
-    Deposit         = 1,    Withdraw        = 2,    Total_Balances  = 3,
-    MainMenu_1      = 4,    
-};
-
 const std::string ClientsFilename = "ClientsData.txt";
 const std::string UsersFilename = "Users.txt";
 

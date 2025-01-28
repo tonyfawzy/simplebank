@@ -28,14 +28,61 @@ sUserData
     short Permissions = 0;
     bool MarkForDelete = false;
 };
+/*
+enum enMenuOptions {
+    ShowClientsList = 1,    AddNewClient   = 2,    DeleteClient    = 4,
+    UpdateClient    = 8,    FindClient     = 16,   Transactions    = 32,
+    ManageUsers     = 64,   Logout         = 128,
+};
+*/
+
+enum enMenuOptions {
+    ShowClientsList = 1,    AddNewClient   = 2,    DeleteClient    = 3,
+    UpdateClient    = 4,    FindClient     = 5,   Transactions     = 6,
+    ManageUsers     = 7,   Logout          = 8,
+};
+
+enum enManageUsersOptions {
+    ListUsers       = 1,    AddNewUser     = 2,    DeleteUser      = 3,
+    UpdateUser      = 4,    FindUser       = 5,    MainMenu        = 6,
+};
+
+enum enTransactionsOptions {
+    Deposit         = 1,    Withdraw       = 2,    Total_Balances  = 3,
+    MainMenu_1      = 4,    
+};
+
 
 /* funcation declarations */
 bool isAccountNumberExist(std::string accountNumber, sClientData& ClientData, std::vector<sClientData>vClientsData);
+bool isUserExist(std::string Username, sUserData& UsersData, std::vector<sUserData>vUsersData);
 
 const std::string delim = "#//#";
 
 
 namespace getInfo {
+
+    double 
+    doubleNum(std::string message = "Please enter a double number")
+    {
+        double d_num = 0;
+        std::cout << message + ": "; std::cin >> d_num; return d_num;
+    }
+
+    short 
+    shortNum(std::string message = "Please enter a short number")
+    {
+        short s_num = 0;
+        std::cout << message + ": "; std::cin >> s_num; return s_num;
+    }
+
+    std::string 
+    s_string(std::string message = "Please enter the account number")
+    {
+        std::string txt = "";
+        std::cout << message + ": "; std::getline(std::cin >> std::ws, txt);
+        return txt;
+    }
 
     sClientData 
     clientData(std::vector<sClientData>vClientsData, bool enable_account_number = false)
@@ -67,34 +114,75 @@ namespace getInfo {
         return ClientData;
     }
 
+    short
+    UserPermissions()
+    {
+        char isFullAccess = 'n';
+        short Permissions = 0;
+
+        std::cout << "Do you want to give full access? y/n? "; std::cin >> isFullAccess;
+
+        if (tolower(isFullAccess) == 'y')
+        {
+            return -1;
+            
+        } else {
+            char YesOrNo = 'n';
+
+            std::cout << "Do you want to give access to:\n\n";
+            std::cout << "Show Client List? y/n? "; std::cin >> YesOrNo;
+            if (YesOrNo == tolower('y'))
+                Permissions |= 1;
+
+            std::cout << "Add New Client? y/n? "; std::cin >> YesOrNo;
+            if (YesOrNo == tolower('y'))
+                Permissions |= 2;
+
+            std::cout << "Delete Client? y/n? "; std::cin >> YesOrNo;
+            if (YesOrNo == tolower('y'))
+                Permissions |= 4;
+
+            std::cout << "Update Client? y/n? "; std::cin >> YesOrNo;
+            if (YesOrNo == tolower('y'))
+                Permissions |= 8;                
+
+            std::cout << "Find Client? y/n? "; std::cin >> YesOrNo;
+            if (YesOrNo == tolower('y'))
+                Permissions |= 16;    
+
+            std::cout << "Transactions? y/n? "; std::cin >> YesOrNo;
+            if (YesOrNo == tolower('y'))
+                Permissions |= 32;   
+
+            std::cout << "Manage users? y/n? "; std::cin >> YesOrNo;
+            if (YesOrNo == tolower('y'))
+                Permissions |= 64;   
+        }
+
+        return Permissions;
+    }
+
+
     sUserData
     UserData (std::vector<sUserData> vUsersData)
     {
-        
+        sUserData UserData;
+        UserData.Username = getInfo::s_string("Enter Username");
+        while (isUserExist(UserData.Username, UserData, vUsersData))
+        {
+                std::cout << "Client with [" + UserData.Username + "] Already exists, "
+                    << "Please Enter another Account Number? ";
+                std::getline(std::cin >> std::ws, UserData.Username);
+        }
+        UserData.Password = getInfo::s_string("Enter Password");
+
+        UserData.Permissions = getInfo::UserPermissions();
+
+        return UserData;
     }
 
 
-    double 
-    doubleNum(std::string message = "Please enter a double number")
-    {
-        double d_num = 0;
-        std::cout << message + ": "; std::cin >> d_num; return d_num;
-    }
-
-    short 
-    shortNum(std::string message = "Please enter a short number")
-    {
-        short s_num = 0;
-        std::cout << message + ": "; std::cin >> s_num; return s_num;
-    }
-
-    std::string 
-    s_string(std::string message = "Please enter the account number")
-    {
-        std::string txt = "";
-        std::cout << message + ": "; std::getline(std::cin >> std::ws, txt);
-        return txt;
-    }
+    
 
 }
 
