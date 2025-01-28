@@ -326,7 +326,7 @@ isAccountNumberExist(std::string accountNumber, sClientData& ClientData, std::ve
 }
 
 bool 
-isUsernameExist(std::string Username, sUserData& UserData, std::vector<sUserData>vUsersData)
+isUserExist(std::string Username, sUserData& UserData, std::vector<sUserData>vUsersData)
 {
     for (sUserData& U : vUsersData)
     {
@@ -341,7 +341,7 @@ isUsernameExist(std::string Username, sUserData& UserData, std::vector<sUserData
 
 
 bool 
-isUsernameAndPasswordExist(std::string Username, std::string Password, sUserData& UsersData, std::vector<sUserData>vUsersData)
+isUserExist(std::string Username, std::string Password, sUserData& UsersData, std::vector<sUserData>vUsersData)
 {
     for (sUserData& U : vUsersData)
     {

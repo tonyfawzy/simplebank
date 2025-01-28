@@ -33,6 +33,15 @@ void ShowTransactionsMenuOptions();
 void ShowManageUsersOptions();
 void Login();
 
+
+void clearScreen() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
 void
 MakeHeader(std::string title, char _dividerChar = dividerChar)
 {
@@ -127,7 +136,7 @@ DeleteUserData()
     MakeHeader("Delete User Screen");
     std::string Username = "";
     std::cout << "Please enter username? "; std::getline(std::cin >> std::ws, Username);
-    if (isUsernameExist(Username,UserData,vUsersData))
+    if (isUserExist(Username,UserData,vUsersData))
     {
         char _delete = 'n';
         showInfo::UserDataCard(UserData);
@@ -214,7 +223,7 @@ FindUserData()
     std::string Username = "";
     std::cout << "Please enter username? "; std::getline(std::cin >> std::ws, Username);
 
-    if (isUsernameExist(Username,UserData,vUsersData))
+    if (isUserExist(Username,UserData,vUsersData))
     {
         showInfo::UserDataCard(UserData);
     } else {
@@ -360,22 +369,22 @@ PerfromTransactionsOptions(enTransactionsOptions TransactionsOptions)
     switch (TransactionsOptions)
     {
     case enTransactionsOptions::Deposit:
-        system("clear");
+        clearScreen();
         PerformDeposit();
         GoBackToTransactionsOptions();
         break;
     case enTransactionsOptions::Withdraw:
-        system("clear");
+        clearScreen();
         PerformWithdraw();
         GoBackToTransactionsOptions();
         break;
     case enTransactionsOptions::Total_Balances:
-        system("clear");
+        clearScreen();
         ShowTotalBalances();
         GoBackToTransactionsOptions();
         break;    
     case enTransactionsOptions::MainMenu_1:
-        system("clear");
+        clearScreen();
         ShowMainMenuOptions();
         break;
     }
@@ -387,41 +396,41 @@ PerfromMainMenuOption(enMenuOptions MenuOption)
     switch (MenuOption)
     {
     case enMenuOptions::ShowClientsList:
-        system("clear");
+        clearScreen();
         ShowClientsData();
         GoBackToMainMenuOptions();
         break;
     
     case enMenuOptions::AddNewClient:
-        system("clear");
+        clearScreen();
         AddClientsData();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::DeleteClient:
-        system("clear");
+        clearScreen();
         DeleteClientData();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::UpdateClient:
-        system("clear");
+        clearScreen();
         UpdateClientInfo();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::FindClient:
-        system("clear");
+        clearScreen();
         FindClientData();
         GoBackToMainMenuOptions();
         break;
     case enMenuOptions::Transactions:
-        system("clear");
+        clearScreen();
         ShowTransactionsMenuOptions();
         break;
     case enMenuOptions::ManageUsers:
-        system("clear");
+        clearScreen();
         ShowManageUsersOptions();
         break;
     case enMenuOptions::Logout:
-        system("clear");
+        clearScreen();
         Login();
         break;
 
@@ -436,31 +445,31 @@ PerfromManageUsersOption(enManageUsersOptions ManageUsersOptions)
     switch (ManageUsersOptions)
     {
     case enManageUsersOptions::ListUsers:
-        system("clear");
+        clearScreen();
         ShowUsersData();
         GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::AddNewUser:
-        system("clear");
+        clearScreen();
         AddUsersData();
         GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::DeleteUser:
-        system("clear");
+        clearScreen();
         DeleteUserData();
         GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::UpdateUser:
-        system("clear");
+        clearScreen();
         GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::FindUser:
-        system("clear");
+        clearScreen();
         FindUserData();
         GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::MainMenu:
-        system("clear");
+        clearScreen();
         ShowMainMenuOptions();
         break;
     }
@@ -471,7 +480,7 @@ ShowManageUsersOptions()
 {
     std::string title = "Manage Users Menu Screen";
 
-    system("clear");
+    clearScreen();
 
     MakeHeader(title);
 
@@ -495,7 +504,7 @@ ShowMainMenuOptions()
 {
     std::string title = "Main Menu Screen";
 
-    system("clear");
+    clearScreen();
 
     MakeHeader(title);
 
@@ -519,7 +528,7 @@ ShowTransactionsMenuOptions()
 {
     std::string title = "Transactions Menu Screen";
 
-    system("clear");
+    clearScreen();
 
     MakeHeader(title);
 
@@ -541,7 +550,7 @@ Login()
 {
     std::string title = "Login Screen";
 
-    system("clear");
+    clearScreen();
 
     MakeHeader(title);
 
@@ -551,9 +560,9 @@ Login()
     std::string Username = getInfo::s_string("Enter Username");
     std::string Password = getInfo::s_string("Enter Password");
 
-    while (!isUsernameAndPasswordExist(Username, Password,UserData,vUsersData))
+    while (!isUserExist(Username, Password, UserData, vUsersData))
     {
-        system("clear");
+        clearScreen();
         MakeHeader(title);
         std::cout << "Invalid Username/Password!\n";
         Username = getInfo::s_string("Enter Username");
