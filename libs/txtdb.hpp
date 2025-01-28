@@ -89,11 +89,11 @@ namespace getInfo {
     }
 
     std::string 
-    accountNumber(std::string message = "Please enter the account number")
+    s_string(std::string message = "Please enter the account number")
     {
-        std::string accountNumber = "";
-        std::cout << message + ": "; std::getline(std::cin >> std::ws, accountNumber);
-        return accountNumber;
+        std::string txt = "";
+        std::cout << message + ": "; std::getline(std::cin >> std::ws, txt);
+        return txt;
     }
 
 }
@@ -121,6 +121,7 @@ namespace showInfo {
 
         std::cout << std::endl;
     }
+
 
     void 
     UserDataCard(sUserData UserData, std::string HeaderMessage = "The following are the user details:")
@@ -213,7 +214,7 @@ namespace showInfo {
     void 
     showClientDataByAccountNumber(std::vector<sClientData>vClientsData)
     {
-        std::string accountNumber = getInfo::accountNumber();
+        std::string accountNumber = getInfo::s_string();
         sClientData ClientData;
         if (isAccountNumberExist(accountNumber, ClientData, vClientsData))
         {

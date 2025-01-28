@@ -31,6 +31,7 @@ const char dividerChar = '-';
 void ShowMainMenuOptions();
 void ShowTransactionsMenuOptions();
 void ShowManageUsersOptions();
+void Login();
 
 void
 MakeHeader(std::string title, char _dividerChar = dividerChar)
@@ -204,6 +205,26 @@ FindClientData()
 }
 
 void
+FindUserData()
+{
+    std::vector<sUserData> vUsersData = txtDB::LoadUsersDataFromFile(UsersFilename);
+    sUserData UserData;
+
+    MakeHeader("Find User Screen");
+    std::string Username = "";
+    std::cout << "Please enter username? "; std::getline(std::cin >> std::ws, Username);
+
+    if (isUsernameExist(Username,UserData,vUsersData))
+    {
+        showInfo::UserDataCard(UserData);
+    } else {
+        std::cout << Username << " NOT exist!\n";
+    }
+}
+
+
+
+void
 GoBackToMainMenuOptions()
 {
 #ifdef _WIN32
@@ -280,12 +301,12 @@ PerformDeposit()
     std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     sClientData ClientData;
 
-    std::string accountNumber = getInfo::accountNumber();
+    std::string accountNumber = getInfo::s_string();
 
     while (!(isAccountNumberExist(accountNumber,ClientData,vClientsData)))
     {
         std::cout << "Invalid Account Number, Please try again!!\n";
-        accountNumber = getInfo::accountNumber();
+        accountNumber = getInfo::s_string();
     }
 
     showInfo::ClientDataCard(ClientData);
@@ -302,13 +323,13 @@ PerformWithdraw()
     MakeHeader("Withdraw Screen");
 
     std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
-    std::string accountNumber = getInfo::accountNumber();
+    std::string accountNumber = getInfo::s_string();
     sClientData ClientData;
 
     while (!(isAccountNumberExist(accountNumber, ClientData, vClientsData)))
     {
         std::cout << "Invalid Account Number, Please try again!!\n";
-        accountNumber = getInfo::accountNumber();
+        accountNumber = getInfo::s_string();
     }
 /*    PerformWithdrawByAccountNumber(accountNumber, vClientsData); */
 
@@ -401,7 +422,7 @@ PerfromMainMenuOption(enMenuOptions MenuOption)
         break;
     case enMenuOptions::Logout:
         system("clear");
-        //MakeHeader("GoodBye :(");
+        Login();
         break;
 
     }
@@ -435,6 +456,7 @@ PerfromManageUsersOption(enManageUsersOptions ManageUsersOptions)
         break;
     case enManageUsersOptions::FindUser:
         system("clear");
+        FindUserData();
         GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::MainMenu:
@@ -522,6 +544,23 @@ Login()
     system("clear");
 
     MakeHeader(title);
+
+    sUserData UserData;
+    std::vector<sUserData> vUsersData = txtDB::LoadUsersDataFromFile(UsersFilename);
+
+    std::string Username = getInfo::s_string("Enter Username");
+    std::string Password = getInfo::s_string("Enter Password");
+
+    while (!isUsernameAndPasswordExist(Username, Password,UserData,vUsersData))
+    {
+        system("clear");
+        MakeHeader(title);
+        std::cout << "Invalid Username/Password!\n";
+        Username = getInfo::s_string("Enter Username");
+        Password = getInfo::s_string("Enter Password");
+
+    }
+
 
     ShowMainMenuOptions();
 }
