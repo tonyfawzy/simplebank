@@ -21,11 +21,12 @@ sClientData
 };
 
 struct 
-sUsersData
+sUserData
 {
     std::string Username = "";
     std::string Password = "";
     short Permissions = 0;
+    bool MarkForDelete = false;
 };
 
 /* funcation declarations */
@@ -36,7 +37,8 @@ const std::string delim = "#//#";
 
 namespace getInfo {
 
-    sClientData clientData(std::vector<sClientData>vClientsData, bool enable_account_number = false)
+    sClientData 
+    clientData(std::vector<sClientData>vClientsData, bool enable_account_number = false)
     {
         sClientData ClientData;
         if (enable_account_number)
@@ -63,6 +65,12 @@ namespace getInfo {
         }
 
         return ClientData;
+    }
+
+    sUserData
+    UserData (std::vector<sUserData> vUsersData)
+    {
+        
     }
 
 
@@ -115,10 +123,28 @@ namespace showInfo {
     }
 
     void 
+    UserDataCard(sUserData UserData, std::string HeaderMessage = "The following are the user details:")
+    {
+        std::cout << HeaderMessage << '\n' << std::endl;
+        char arrCol1[3][11] = {
+            "Username",
+            "Password",
+            "Permission",
+        };
+
+
+        std::cout << std::left << std::setw(15) << arrCol1[0] << DLIM << UserData.Username << std::endl;
+        std::cout << std::left << std::setw(15) << arrCol1[1] << DLIM << UserData.Password << std::endl;
+        std::cout << std::left << std::setw(15) << arrCol1[2] << DLIM << UserData.Permissions << std::endl;
+
+        std::cout << std::endl;
+    }
+
+    void 
     AllClients(std::vector<sClientData>vClientsData)
     {
 
-        std::cout << "\t\t\t\t\tClient List(" << vClientsData.size() << ") Client(s).\n";
+        std::cout << "\t\t\t\t\tClients List(" << vClientsData.size() << ") Client(s).\n";
         std::cout << "---------------------------------------------------------------------------------------------\n";
         std::cout << "| " << std::left << std::setw(20) << "Account Number";
         std::cout << "| " << std::left << std::setw(10) << "PIN Code";
@@ -137,6 +163,27 @@ namespace showInfo {
         }
         std::cout << "---------------------------------------------------------------------------------------------\n";
     }
+
+    void 
+    AllUsers(std::vector<sUserData>vUsersData)
+    {
+
+        std::cout << "\t\t\t\t\tUsers List(" << vUsersData.size() << ") Users(s).\n";
+        std::cout << "---------------------------------------------------------------------------------------------\n";
+        std::cout << "| " << std::left << std::setw(20) << "Username";
+        std::cout << "| " << std::left << std::setw(20) << "Password";
+        std::cout << "| " << std::left << std::setw(20) << "Permission";
+        std::cout << "\n---------------------------------------------------------------------------------------------\n";
+        for (sUserData& U : vUsersData)
+        {
+            std::cout << "| " << std::left << std::setw(20) << U.Username;
+            std::cout << "| " << std::left << std::setw(20) << U.Password;
+            std::cout << "| " << std::left << std::setw(20) << U.Permissions;
+            std::cout << std::endl;
+        }
+        std::cout << "---------------------------------------------------------------------------------------------\n";
+    }
+
     void 
     TotalBalances(std::vector<sClientData>vClientsData)
     {
@@ -227,6 +274,20 @@ ConvertLineToRecord(std::string line)
     return ClientData;
 }
 
+sUserData 
+ConvertUserLineToRecord(std::string line)
+{
+    std::vector<std::string>vRecords = SplitString(line);
+    sUserData UserClient;
+
+    UserClient.Username = vRecords[0];
+    UserClient.Password = vRecords[1];
+    UserClient.Permissions = std::stoi(vRecords[2]);
+
+    return UserClient;
+}
+
+
 std::string 
 ConvertRecordToLine(sClientData ClientData, std::string _delim = delim)
 {
@@ -239,7 +300,15 @@ ConvertRecordToLine(sClientData ClientData, std::string _delim = delim)
     return line;
 }
 
-
+std::string 
+ConvertUsersRecordToLine(sUserData UserData, std::string _delim = delim)
+{
+    std::string line = "";
+    line += UserData.Username + delim;
+    line += UserData.Password + delim;
+    line += std::to_string(UserData.Permissions);
+    return line;
+}
 
 bool 
 isAccountNumberExist(std::string accountNumber, sClientData& ClientData, std::vector<sClientData>vClientsData)
@@ -256,9 +325,24 @@ isAccountNumberExist(std::string accountNumber, sClientData& ClientData, std::ve
 }
 
 bool 
-isUsernameAndPasswordExist(std::string Username, std::string Password, sUsersData& UsersData, std::vector<sUsersData>vUsersData)
+isUsernameExist(std::string Username, sUserData& UserData, std::vector<sUserData>vUsersData)
 {
-    for (sUsersData& U : vUsersData)
+    for (sUserData& U : vUsersData)
+    {
+        if (Username == U.Username)
+        {
+            UserData = U;
+            return true;
+        }
+    }
+    return false;
+}
+
+
+bool 
+isUsernameAndPasswordExist(std::string Username, std::string Password, sUserData& UsersData, std::vector<sUserData>vUsersData)
+{
+    for (sUserData& U : vUsersData)
     {
         if (Username == U.Username && Password == U.Password) {
             UsersData = U;
@@ -270,11 +354,12 @@ isUsernameAndPasswordExist(std::string Username, std::string Password, sUsersDat
 
 namespace txtDB {
 
-    std::vector<sClientData> LoadClientsDataFromFile(std::string _filename)
+    std::vector<sClientData> 
+    LoadClientsDataFromFile(std::string filename)
     {
         std::vector<sClientData> vClientsData;
         std::fstream file;
-        file.open(_filename, std::ios::in);
+        file.open(filename, std::ios::in);
         if (file.is_open())
         {
             sClientData ClientData;
@@ -290,7 +375,29 @@ namespace txtDB {
         return vClientsData;
     }
 
-    void MarkClientDataForDelete(std::string accountNumber, std::vector<sClientData>& vClientsData)
+    std::vector<sUserData> 
+    LoadUsersDataFromFile(std::string filename)
+    {
+        std::vector<sUserData> vUsersData;
+        std::fstream file;
+        file.open(filename, std::ios::in);
+        if (file.is_open())
+        {
+            sUserData UserData;
+            std::string line = "";
+            while (std::getline(file, line))
+            {
+                UserData = ConvertUserLineToRecord(line);
+                vUsersData.push_back(UserData);
+            }
+
+            file.close();
+        }
+        return vUsersData;
+    }
+
+    void 
+    MarkClientDataForDelete(std::string accountNumber, std::vector<sClientData>& vClientsData)
     {
         for (sClientData& ClientData : vClientsData)
         {
@@ -301,12 +408,25 @@ namespace txtDB {
         }
     }
 
+    void 
+    MarkUserDataForDelete(std::string Username, std::vector<sUserData>& vUsersData)
+    {
+        for (sUserData& UserData : vUsersData)
+        {
+            if (UserData.Username == Username)
+            {
+                UserData.MarkForDelete = true;
+            }
+        }
+    }
 
 
-    void SaveClientsDataToFile(std::vector<sClientData>vClientsData, std::string _filename)
+
+    void 
+    SaveClientsDataToFile(std::vector<sClientData>vClientsData, std::string filename)
     {
         std::fstream file;
-        file.open(_filename, std::ios::out);
+        file.open(filename, std::ios::out);
         if (file.is_open())
         {
             std::string line = "";
@@ -315,6 +435,27 @@ namespace txtDB {
                 if (C.MarkForDelete == false)
                 {
                     line = ConvertRecordToLine(C);
+                    file << line << std::endl;
+                }
+            }
+            file.close();
+        }
+
+    }
+
+    void 
+    SaveUsersDataToFile(std::vector<sUserData>vUsersData, std::string filename)
+    {
+        std::fstream file;
+        file.open(filename, std::ios::out);
+        if (file.is_open())
+        {
+            std::string line = "";
+            for (sUserData& U : vUsersData)
+            {
+                if (U.MarkForDelete == false)
+                {
+                    line = ConvertUsersRecordToLine(U);
                     file << line << std::endl;
                 }
             }

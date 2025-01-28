@@ -22,7 +22,9 @@ enum enTransactionsOptions {
     MainMenu_1      = 4,    
 };
 
-const std::string filename = "ClientsData.txt";
+const std::string ClientsFilename = "ClientsData.txt";
+const std::string UsersFilename = "Users.txt";
+
 const char dividerChar = '-';
 
 /* funcation declarations */
@@ -50,8 +52,15 @@ MakeHeader(std::string title, char _dividerChar = dividerChar)
 void
 ShowClientsData()
 {
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     showInfo::AllClients(vClientsData);
+}
+
+void
+ShowUsersData()
+{
+    std::vector<sUserData> vUsersData = txtDB::LoadUsersDataFromFile(UsersFilename);
+    showInfo::AllUsers(vUsersData);
 }
 
 
@@ -61,17 +70,30 @@ AddClientsData()
     MakeHeader("Add New Clients Screen");
     char addMore = 'n';
     do {
-        std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+        std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
         vClientsData.push_back(getInfo::clientData(vClientsData,true));
-        txtDB::SaveClientsDataToFile(vClientsData,filename);
+        txtDB::SaveClientsDataToFile(vClientsData,ClientsFilename);
         std::cout << "Client Added Successfully, Do you want to add more clients? Y/N? "; std::cin >> addMore;
+    } while (tolower(addMore) == 'y');
+}
+
+void
+AddUsersData()
+{
+    MakeHeader("Add New Users Screen");
+    char addMore = 'n';
+    do {
+        std::vector<sUserData> vUsersData = txtDB::LoadUsersDataFromFile(UsersFilename);
+        vUsersData.push_back(getInfo::UserData(vUsersData));
+        txtDB::SaveUsersDataToFile(vUsersData,UsersFilename);
+        std::cout << "User Added Successfully, Do you want to add more users? Y/N? "; std::cin >> addMore;
     } while (tolower(addMore) == 'y');
 }
 
 void
 DeleteClientData()
 {
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     sClientData ClientData;
 
     MakeHeader("Delete Client Screen");
@@ -86,7 +108,7 @@ DeleteClientData()
         if (tolower(_delete) == 'y')
         {
             txtDB::MarkClientDataForDelete(accountNumber,vClientsData);
-            txtDB::SaveClientsDataToFile(vClientsData,filename);
+            txtDB::SaveClientsDataToFile(vClientsData,ClientsFilename);
             std::cout << "The client has been deleted!\n";
         }
     } else {
@@ -96,10 +118,36 @@ DeleteClientData()
 }
 
 void
+DeleteUserData()
+{
+    std::vector<sUserData> vUsersData = txtDB::LoadUsersDataFromFile(UsersFilename);
+    sUserData UserData;
+
+    MakeHeader("Delete User Screen");
+    std::string Username = "";
+    std::cout << "Please enter username? "; std::getline(std::cin >> std::ws, Username);
+    if (isUsernameExist(Username,UserData,vUsersData))
+    {
+        char _delete = 'n';
+        showInfo::UserDataCard(UserData);
+
+        std::cout << "Are you sure you want to delete this client? Y/N? "; std::cin >> _delete;
+        if (tolower(_delete) == 'y')
+        {
+            txtDB::MarkUserDataForDelete(Username,vUsersData);
+            txtDB::SaveUsersDataToFile(vUsersData,UsersFilename);
+            std::cout << "The user has been deleted!\n";
+        }
+    } else {
+        std::cout << Username << " NOT exist!\n";
+    }
+  
+}
+void
 UpdateClientInfo()
 {
 
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     sClientData ClientData;
 
     MakeHeader("Update Client Info Screen");
@@ -125,7 +173,7 @@ UpdateClientInfo()
                 }
             }
 
-            txtDB::SaveClientsDataToFile(vClientsData,filename);
+            txtDB::SaveClientsDataToFile(vClientsData,ClientsFilename);
             std::cout << "The client has been updated!\n";
 
 
@@ -140,7 +188,7 @@ UpdateClientInfo()
 void
 FindClientData()
 {
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     sClientData ClientData;
 
     MakeHeader("Find Client Screen");
@@ -158,22 +206,45 @@ FindClientData()
 void
 GoBackToMainMenuOptions()
 {
+#ifdef _WIN32
+    std::cout << "\n\nPress any key to go back to main menu...";
+    system("pause>0");
+    ShowMainMenuOptions();
+#else
     system("read -p \"\n\nPress any key to go back to main menu...\"");
     ShowMainMenuOptions();
+#endif
 }
 
 
 void
 GoBackToTransactionsOptions()
 {
+#ifdef _WIN32
     std::cout << "\n\nPress any key to go back to main menu...";
     system("pause>0");
     ShowTransactionsMenuOptions();
+#else
+    system("read -p \"\n\nPress any key to go back to main menu...\"");
+    ShowTransactionsMenuOptions();
+#endif
 }
 
+void
+GoBackToManageUsersOptions()
+{
+#ifdef _WIN32
+    std::cout << "\n\nPress any key to go back to main menu...";
+    system("pause>0");
+    ShowManageUsersOptions();
+#else
+    system("read -p \"\n\nPress any key to go back to main menu...\"");
+    ShowManageUsersOptions();
+#endif
+}
 
 bool
-PerformDepositByAccountNumber(std::string accountNumber, double amount, std::vector<sClientData>& vClientsData)
+PerformDepositByAccountNumber(std::string AccountNumber, double amount, std::vector<sClientData>& vClientsData)
 {
 
     char confirm = 'n';
@@ -184,10 +255,10 @@ PerformDepositByAccountNumber(std::string accountNumber, double amount, std::vec
     {
         for (sClientData& C : vClientsData)
         {
-            if (C.AccountNumber == accountNumber)
+            if (C.AccountNumber == AccountNumber)
             {
                 C.AccountBalance += amount;
-                txtDB::SaveClientsDataToFile(vClientsData, filename);
+                txtDB::SaveClientsDataToFile(vClientsData, ClientsFilename);
                 std::cout << "\nDone successfully. New balance is: " << C.AccountBalance;
                 break;
             }
@@ -206,7 +277,7 @@ PerformDeposit()
 {
     MakeHeader("Deposit Screen");
 
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     sClientData ClientData;
 
     std::string accountNumber = getInfo::accountNumber();
@@ -230,7 +301,7 @@ PerformWithdraw()
 {
     MakeHeader("Withdraw Screen");
 
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     std::string accountNumber = getInfo::accountNumber();
     sClientData ClientData;
 
@@ -257,7 +328,7 @@ PerformWithdraw()
 void
 ShowTotalBalances()
 {
-    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(filename);
+    std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     showInfo::TotalBalances(vClientsData);
 }
 
@@ -336,6 +407,8 @@ PerfromMainMenuOption(enMenuOptions MenuOption)
     }
 }
 
+
+
 void
 PerfromManageUsersOption(enManageUsersOptions ManageUsersOptions)
 {
@@ -343,19 +416,26 @@ PerfromManageUsersOption(enManageUsersOptions ManageUsersOptions)
     {
     case enManageUsersOptions::ListUsers:
         system("clear");
-        GoBackToMainMenuOptions();
+        ShowUsersData();
+        GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::AddNewUser:
         system("clear");
+        AddUsersData();
+        GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::DeleteUser:
         system("clear");
+        DeleteUserData();
+        GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::UpdateUser:
         system("clear");
+        GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::FindUser:
         system("clear");
+        GoBackToManageUsersOptions();
         break;
     case enManageUsersOptions::MainMenu:
         system("clear");
@@ -434,11 +514,22 @@ ShowTransactionsMenuOptions()
 }
 
 
+void
+Login()
+{
+    std::string title = "Login Screen";
+
+    system("clear");
+
+    MakeHeader(title);
+
+    ShowMainMenuOptions();
+}
 
 
 int main()
 {
-    ShowMainMenuOptions();
+    Login();
 
     return 0;
 }
