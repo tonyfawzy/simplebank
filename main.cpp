@@ -9,6 +9,9 @@
 const std::string ClientsFilename = "ClientsData.txt";
 const std::string UsersFilename = "Users.txt";
 
+
+sUserData CurrentUser;
+
 const char dividerChar = '-';
 
 /* funcation declarations */
@@ -16,14 +19,25 @@ void ShowMainMenuOptions();
 void ShowTransactionsMenuOptions();
 void ShowManageUsersOptions();
 void Login();
+void GoBackToMainMenuOptions();
 
 
-void clearScreen() {
+void 
+clearScreen() {
     #ifdef _WIN32
         system("cls");
     #else
         system("clear");
     #endif
+}
+
+void
+AccessDeniedScreen()
+{
+    std::cout << "--------------------------------------------------\n";
+    std::cout << "Access Denied,\nYou don't have \"Permission\" to do this,\nPlease Contact Your Admin.\n";
+    std::cout << "--------------------------------------------------\n" << std::endl;
+
 }
 
 void
@@ -43,6 +57,19 @@ MakeHeader(std::string title, char _dividerChar = dividerChar)
     std::cout << std::endl;
 }
 
+
+bool
+CheckAccessPermission(enMenuPermissions Permission)
+{
+    if (CurrentUser.Permissions == enMenuPermissions::pAll)
+        return true;
+    
+    if ((Permission & CurrentUser.Permissions) == Permission)
+        return true;
+    else
+        return false;
+}
+
 void
 ShowClientsData()
 {
@@ -53,6 +80,13 @@ ShowClientsData()
 void
 ShowUsersData()
 {
+    if (!CheckAccessPermission (enMenuPermissions::pShowClientsList))
+    {
+        AccessDeniedScreen();
+        GoBackToMainMenuOptions();
+        return;
+    }
+
     std::vector<sUserData> vUsersData = txtDB::LoadUsersDataFromFile(UsersFilename);
     showInfo::AllUsers(vUsersData);
 }
@@ -61,6 +95,14 @@ ShowUsersData()
 void
 AddClientsData()
 {
+
+    if (!CheckAccessPermission (enMenuPermissions::pAddNewClient))
+    {
+        AccessDeniedScreen();
+        GoBackToMainMenuOptions();
+        return;
+    }
+
     MakeHeader("Add New Clients Screen");
     char addMore = 'n';
     do {
@@ -87,6 +129,13 @@ AddUsersData()
 void
 DeleteClientData()
 {
+    if (!CheckAccessPermission (enMenuPermissions::pDeleteClient))
+    {
+        AccessDeniedScreen();
+        GoBackToMainMenuOptions();
+        return;
+    }
+
     std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     sClientData ClientData;
 
@@ -141,6 +190,12 @@ void
 UpdateClientInfo()
 {
 
+    if (!CheckAccessPermission (enMenuPermissions::pUpdateClient))
+    {
+        AccessDeniedScreen();
+        GoBackToMainMenuOptions();
+        return;
+    }
     std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     sClientData ClientData;
 
@@ -182,6 +237,14 @@ UpdateClientInfo()
 void
 FindClientData()
 {
+
+    if (!CheckAccessPermission (enMenuPermissions::pFindClient))
+    {
+        AccessDeniedScreen();
+        GoBackToMainMenuOptions();
+        return;
+    }
+
     std::vector<sClientData> vClientsData = txtDB::LoadClientsDataFromFile(ClientsFilename);
     sClientData ClientData;
 
@@ -422,7 +485,6 @@ PerfromMainMenuOption(enMenuOptions MenuOption)
 }
 
 
-
 void
 PerfromManageUsersOption(enManageUsersOptions ManageUsersOptions)
 {
@@ -462,6 +524,13 @@ PerfromManageUsersOption(enManageUsersOptions ManageUsersOptions)
 void
 ShowManageUsersOptions()
 {
+    if (!CheckAccessPermission (enMenuPermissions::pManageUsers))
+    {
+        AccessDeniedScreen();
+        GoBackToMainMenuOptions();
+        return;
+    }
+
     std::string title = "Manage Users Menu Screen";
 
     clearScreen();
@@ -510,6 +579,13 @@ ShowMainMenuOptions()
 void
 ShowTransactionsMenuOptions()
 {
+    if (!CheckAccessPermission (enMenuPermissions::pTransactions))
+    {
+        AccessDeniedScreen();
+        GoBackToMainMenuOptions();
+        return;
+    }
+
     std::string title = "Transactions Menu Screen";
 
     clearScreen();
@@ -528,6 +604,22 @@ ShowTransactionsMenuOptions()
 
 }
 
+bool 
+FindUserByUsernameAndPassword(std::string Username, std::string Password, sUserData& UserData)
+{
+    std::vector<sUserData> vUsersData = txtDB::LoadUsersDataFromFile(UsersFilename);
+    for (sUserData& U : vUsersData) {
+        if (U.Username == Username && U.Password == Password) {
+            UserData = U;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool
+LoadUserInfo(std::string Username, std::string Password)
+{ return FindUserByUsernameAndPassword(Username, Password, CurrentUser); }
 
 void
 Login()
@@ -538,13 +630,10 @@ Login()
 
     MakeHeader(title);
 
-    sUserData UserData;
-    std::vector<sUserData> vUsersData = txtDB::LoadUsersDataFromFile(UsersFilename);
-
     std::string Username = getInfo::s_string("Enter Username");
     std::string Password = getInfo::s_string("Enter Password");
 
-    while (!isUserExist(Username, Password, UserData, vUsersData))
+    while (!LoadUserInfo(Username, Password))
     {
         clearScreen();
         MakeHeader(title);
@@ -557,7 +646,6 @@ Login()
 
     ShowMainMenuOptions();
 }
-
 
 int main()
 {

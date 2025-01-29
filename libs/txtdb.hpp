@@ -28,28 +28,28 @@ sUserData
     short Permissions = 0;
     bool MarkForDelete = false;
 };
-/*
-enum enMenuOptions {
-    ShowClientsList = 1,    AddNewClient   = 2,    DeleteClient    = 4,
-    UpdateClient    = 8,    FindClient     = 16,   Transactions    = 32,
-    ManageUsers     = 64,   Logout         = 128,
-};
-*/
+
 
 enum enMenuOptions {
-    ShowClientsList = 1,    AddNewClient   = 2,    DeleteClient    = 3,
-    UpdateClient    = 4,    FindClient     = 5,   Transactions     = 6,
-    ManageUsers     = 7,   Logout          = 8,
+    ShowClientsList     = 1,    AddNewClient    = 2,     DeleteClient    = 3,
+    UpdateClient        = 4,    FindClient      = 5,     Transactions    = 6,
+    ManageUsers         = 7,    Logout          = 8,
+};
+
+enum enMenuPermissions {
+    pAll                = -1,   pShowClientsList= 1,    pAddNewClient   = 2,
+    pDeleteClient       = 4,    pUpdateClient   = 8,    pFindClient     = 16,
+    pTransactions       = 32,   pManageUsers    = 64,   pLogout         = 128,
 };
 
 enum enManageUsersOptions {
-    ListUsers       = 1,    AddNewUser     = 2,    DeleteUser      = 3,
-    UpdateUser      = 4,    FindUser       = 5,    MainMenu        = 6,
+    ListUsers           = 1,    AddNewUser      = 2,    DeleteUser       = 3,
+    UpdateUser          = 4,    FindUser        = 5,    MainMenu         = 6,
 };
 
 enum enTransactionsOptions {
-    Deposit         = 1,    Withdraw       = 2,    Total_Balances  = 3,
-    MainMenu_1      = 4,    
+    Deposit             = 1,    Withdraw        = 2,    Total_Balances   = 3,
+    MainMenu_1          = 4,    
 };
 
 
@@ -117,46 +117,46 @@ namespace getInfo {
     short
     UserPermissions()
     {
-        char isFullAccess = 'n';
+        char answer = 'n';
         short Permissions = 0;
 
-        std::cout << "Do you want to give full access? y/n? "; std::cin >> isFullAccess;
+        std::cout << "Do you want to give full access? y/n? "; std::cin >> answer;
 
-        if (tolower(isFullAccess) == 'y')
+        if (tolower(answer) == 'y') 
         {
             return -1;
-            
-        } else {
-            char YesOrNo = 'n';
+        } 
 
+        else 
+        {
             std::cout << "Do you want to give access to:\n\n";
-            std::cout << "Show Client List? y/n? "; std::cin >> YesOrNo;
-            if (YesOrNo == tolower('y'))
-                Permissions |= 1;
+            std::cout << "Show Client List? y/n? "; std::cin >> answer;
+            if (answer == tolower('y'))
+                Permissions += enMenuPermissions::pShowClientsList;
 
-            std::cout << "Add New Client? y/n? "; std::cin >> YesOrNo;
-            if (YesOrNo == tolower('y'))
-                Permissions |= 2;
+            std::cout << "Add New Client? y/n? "; std::cin >> answer;
+            if (answer == tolower('y'))
+                Permissions += enMenuPermissions::pAddNewClient;
 
-            std::cout << "Delete Client? y/n? "; std::cin >> YesOrNo;
-            if (YesOrNo == tolower('y'))
-                Permissions |= 4;
+            std::cout << "Delete Client? y/n? "; std::cin >> answer;
+            if (answer == tolower('y'))
+                Permissions += enMenuPermissions::pDeleteClient;
 
-            std::cout << "Update Client? y/n? "; std::cin >> YesOrNo;
-            if (YesOrNo == tolower('y'))
-                Permissions |= 8;                
+            std::cout << "Update Client? y/n? "; std::cin >> answer;
+            if (answer == tolower('y'))
+                Permissions += enMenuPermissions::pUpdateClient;                
 
-            std::cout << "Find Client? y/n? "; std::cin >> YesOrNo;
-            if (YesOrNo == tolower('y'))
-                Permissions |= 16;    
+            std::cout << "Find Client? y/n? "; std::cin >> answer;
+            if (answer == tolower('y'))
+                Permissions += enMenuPermissions::pFindClient;    
 
-            std::cout << "Transactions? y/n? "; std::cin >> YesOrNo;
-            if (YesOrNo == tolower('y'))
-                Permissions |= 32;   
+            std::cout << "Transactions? y/n? "; std::cin >> answer;
+            if (answer == tolower('y'))
+                Permissions += enMenuPermissions::pTransactions;   
 
-            std::cout << "Manage users? y/n? "; std::cin >> YesOrNo;
-            if (YesOrNo == tolower('y'))
-                Permissions |= 64;   
+            std::cout << "Manage users? y/n? "; std::cin >> answer;
+            if (answer == tolower('y'))
+                Permissions += enMenuPermissions::pManageUsers;   
         }
 
         return Permissions;
